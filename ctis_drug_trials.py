@@ -114,6 +114,17 @@ def get_trial_details(ct_number, session):
 
 
 # ── Flatten ──────────────────────────────────────────────────────────────────
+def _as_list(val):
+    """Ensure a value is a list – API fields sometimes return str/int/None."""
+    if val is None:
+        return []
+    if isinstance(val, list):
+        return val
+    if isinstance(val, str):
+        return [val] if val else []
+    return [str(val)]
+
+
 def _safe(d, *keys, default=""):
     v = d
     for k in keys:
@@ -137,7 +148,7 @@ def extract_products(details):
             "active_substance": info.get("activeSubstanceName") or "",
             "atc_code": info.get("atcCode") or "",
             "pharmaceutical_form": info.get("pharmForm") or "",
-            "route": ", ".join(prod.get("routes") or []),
+            "route": ", ".join(_as_list(prod.get("routes"))),
             "strength": info.get("strength") or "",
             "imp_role": prod.get("impRole") or "",
             "orphan_drug": str(prod.get("orphanDrug", "")),
@@ -194,8 +205,8 @@ def flatten(summary, details=None):
         "sponsor": summary.get("sponsor", ""),
         "sponsor_type": summary.get("sponsorType", ""),
         "product": summary.get("product", ""),
-        "countries": "; ".join(summary.get("trialCountries") or []),
-        "therapeutic_areas": "; ".join(summary.get("therapeuticAreas") or []),
+        "countries": "; ".join(_as_list(summary.get("trialCountries"))),
+        "therapeutic_areas": "; ".join(_as_list(summary.get("therapeuticAreas"))),
         "age_group": summary.get("ageGroup", ""),
         "gender": summary.get("gender", ""),
         "enrolled": summary.get("totalNumberEnrolled", ""),
@@ -207,7 +218,7 @@ def flatten(summary, details=None):
         "end_date": summary.get("endDate") or "",
         "results_first_received": summary.get("resultsFirstReceived", ""),
         "last_updated": summary.get("lastUpdated", ""),
-        "trial_region": "; ".join(summary.get("trialRegion") or []),
+        "trial_region": "; ".join(_as_list(summary.get("trialRegion"))),
         "msc": summary.get("msc", ""),
         "url": TRIAL_PAGE_URL.format(ct_number=ct_number),
     }
