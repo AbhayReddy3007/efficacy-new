@@ -162,12 +162,21 @@ def search_trials(drug, session, max_records=None, verbose=True):
 
 # ── Protocol detail page ─────────────────────────────────────────────────────
 def _table_value(soup, code_prefix):
-    """Find a table row whose first cell starts with code_prefix and return the value cell."""
+    """Find a table row whose first cell matches code_prefix and return the value cell.
+    Matching: first cell text starts with code_prefix (stripped), and the next char
+    (if any) is not a digit or dot, to avoid E.5.1 matching E.5.1.1."""
+    prefix = code_prefix.rstrip()
     for tr in soup.find_all("tr"):
         cells = tr.find_all("td")
         if len(cells) >= 2:
             first = _clean(cells[0].get_text(" ", strip=True))
-            if first.startswith(code_prefix):
+            if first == prefix:
+                return _clean(cells[-1].get_text(" ", strip=True))
+            if first.startswith(prefix):
+                rest = first[len(prefix):]
+                # Allow match if remainder is whitespace/description, not a sub-code
+                if rest and rest[0] in ".0123456789":
+                    continue
                 return _clean(cells[-1].get_text(" ", strip=True))
     return ""
 
@@ -224,12 +233,23 @@ def get_trial_details(eudract, country, session):
                        ("E.6.7", "scope_pd"), ("E.6.8", "scope_bioequivalence")]:
         out[key] = _table_value(soup, label)
 
-    # E.7 – Phase
+    # E.7 – Phase: scan table rows for the phase description text
     phases = []
-    for flag, name in [("E.7.1", "1"), ("E.7.2", "2"), ("E.7.3", "3"), ("E.7.4", "4")]:
-        val = _table_value(soup, flag + " ")
-        if val and val.lower().startswith("yes"):
-            phases.append(name)
+    for desc_fragment, name in [
+        ("Human pharmacology", "1"),
+        ("Therapeutic exploratory", "2"),
+        ("Therapeutic confirmatory", "3"),
+        ("Therapeutic use", "4"),
+    ]:
+        for tr in soup.find_all("tr"):
+            cells = tr.find_all("td")
+            if len(cells) >= 2:
+                row_text = _clean(tr.get_text(" ", strip=True))
+                if desc_fragment in row_text:
+                    last_val = _clean(cells[-1].get_text(" ", strip=True)).lower()
+                    if last_val.startswith("yes"):
+                        phases.append(name)
+                    break
     out["phase"] = "/".join(phases)
 
     # E.8 – Design
