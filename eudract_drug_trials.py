@@ -26,21 +26,6 @@ HEADERS = {
 PER_PAGE = 20; TIMEOUT = 60; RETRIES = 3; RETRY_BACKOFF = 3; POLITE_DELAY = 0.6
 
 
-# ── Phase normalisation ──────────────────────────────────────────────────────
-def normalise_phase(raw: str) -> str:
-    if not raw:
-        return ""
-    s = re.sub(r"(?i)\bphase\s*", "phase ", raw)
-    MAP = {"one": "1", "two": "2", "three": "3", "four": "4",
-           "i": "1", "ii": "2", "iii": "3", "iv": "4",
-           "1": "1", "2": "2", "3": "3", "4": "4"}
-    nums = []
-    for tok in re.split(r"[/,;\s]+", s.lower()):
-        tok = tok.strip("(). ")
-        if tok in MAP and MAP[tok] not in nums:
-            nums.append(MAP[tok])
-    return "/".join(nums) if nums else raw.strip()
-
 
 # ── HTTP ─────────────────────────────────────────────────────────────────────
 def _get(session, url):
@@ -233,13 +218,13 @@ def get_trial_details(eudract, country, session):
                        ("E.6.7", "scope_pd"), ("E.6.8", "scope_bioequivalence")]:
         out[key] = _table_value(soup, label)
 
-    # E.7 – Phase: scan table rows for the phase description text
+    # E.7 – Phase: keep the raw label from the source
     phases = []
-    for desc_fragment, name in [
-        ("Human pharmacology", "1"),
-        ("Therapeutic exploratory", "2"),
-        ("Therapeutic confirmatory", "3"),
-        ("Therapeutic use", "4"),
+    for desc_fragment, label in [
+        ("Human pharmacology", "Phase I"),
+        ("Therapeutic exploratory", "Phase II"),
+        ("Therapeutic confirmatory", "Phase III"),
+        ("Therapeutic use", "Phase IV"),
     ]:
         for tr in soup.find_all("tr"):
             cells = tr.find_all("td")
@@ -248,9 +233,9 @@ def get_trial_details(eudract, country, session):
                 if desc_fragment in row_text:
                     last_val = _clean(cells[-1].get_text(" ", strip=True)).lower()
                     if last_val.startswith("yes"):
-                        phases.append(name)
+                        phases.append(label)
                     break
-    out["phase"] = "/".join(phases)
+    out["phase"] = ", ".join(phases)
 
     # E.8 – Design
     for label, key in [("E.8.1 ", "controlled"), ("E.8.1.1", "randomised"),
