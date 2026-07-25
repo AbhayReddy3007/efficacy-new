@@ -26,23 +26,6 @@ HEADERS = {
 TIMEOUT = 60; RETRIES = 3; RETRY_BACKOFF = 3
 
 
-# ── Phase normalisation ──────────────────────────────────────────────────────
-def normalise_phase(raw: str) -> str:
-    """Convert 'Phase III' / 'phase3' / 'Phase I/Phase II' → '3' / '1/2'."""
-    if not raw:
-        return ""
-    # Normalise 'phase3' / 'phaseIII' into separate tokens first
-    s = re.sub(r"(?i)\bphase\s*", "phase ", raw)
-    MAP = {"one": "1", "two": "2", "three": "3", "four": "4",
-           "i": "1", "ii": "2", "iii": "3", "iv": "4",
-           "1": "1", "2": "2", "3": "3", "4": "4"}
-    nums = []
-    for tok in re.split(r"[/,;\s]+", s.lower()):
-        tok = tok.strip("(). ")
-        if tok in MAP and MAP[tok] not in nums:
-            nums.append(MAP[tok])
-    return "/".join(nums) if nums else raw.strip()
-
 
 # ── HTTP ─────────────────────────────────────────────────────────────────────
 def _request(session, method, url, **kw):
@@ -200,7 +183,7 @@ def flatten(summary, details=None):
         "title": summary.get("ctTitle", ""),
         "short_title": summary.get("shortTitle", ""),
         "status": summary.get("ctStatus", ""),
-        "phase": normalise_phase(summary.get("trialPhase", "")),
+        "phase": summary.get("trialPhase", ""),
         "conditions": summary.get("conditions", ""),
         "sponsor": summary.get("sponsor", ""),
         "sponsor_type": summary.get("sponsorType", ""),
