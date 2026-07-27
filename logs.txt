@@ -1,0 +1,51 @@
+ CTIS reports 12 matching trial(s).
+  ClinicalTrials.gov reports 33 study(ies).
+[ClinicalTrials.gov] 33 row(s) in 1.4s
+  EU-CTR reports 3 matching trial(s).
+  [CTRI] https://ctri.nic.in/Clinicaltrials/regtrials.php?dir=&&modid=1&compid=19&EncHid=&userName=Cagrilintide%2BSemaglutide -> GET https://ctri.nic.in/Clinicaltrials/regtrials.php?dir=&&modid=1&compid=19&EncHid=&userName=Cagrilintide%2BSemaglutide failed after 3 attempts: 404 Client Error: Not Found for url: https://ctri.nic.in/Clinicaltrials/regtrials.php?dir=&&modid=1&compid=19&EncHid=&userName=Cagrilintide%2BSemaglutide
+  [CTRI] https://ctri.nic.in/Clinicaltrials/regtrials.php?dir=&&modid=1&compid=19&EncHid=&userName=Cagrilintide%2BSemaglutide -> GET https://ctri.nic.in/Clinicaltrials/regtrials.php?dir=&&modid=1&compid=19&EncHid=&userName=Cagrilintide%2BSemaglutide failed after 3 attempts: 404 Client Error: Not Found for url: https://ctri.nic.in/Clinicaltrials/regtrials.php?dir=&&modid=1&compid=19&EncHid=&userName=Cagrilintide%2BSemaglutide
+  [CTRI] search POST failed: POST https://ctri.nic.in/Clinicaltrials/advsearch.php failed after 3 attempts: 404 Client Error: Not Found for url: https://ctri.nic.in/Clinicaltrials/advsearch.php
+  CTRI search returned 0 trial link(s).
+  [jRCT] NOTE: jRCT asks users not to bulk-download automatically. Keep runs small and personal.
+[CTRI] 0 row(s) in 29.7s
+[EU Clinical Trials] 15 row(s) in 30.9s
+  ANZCTR search returned 0 trial link(s).
+  [CRIS] falling back to HTML scrape (set CRIS_API_KEY to use the official open API).
+[ANZCTR] 0 row(s) in 1.6s
+  CRIS search returned 1 record(s).
+  [jRCT] search failed on https://jrct.mhlw.go.jp/en-search: GET https://jrct.mhlw.go.jp/en-search failed after 3 attempts: 404 Client Error: Not Found for url: https://jrct.mhlw.go.jp/en-search?reg-plobrem-1=1&reg-plobrem-3=1&demo-1=Cagrilintide%2BSemaglutide&freeword=Cagrilintide%2BSemaglutide
+  jRCT search returned 0 trial id(s).
+[JRCT] 0 row(s) in 14.8s
+  ! CRIS detail failed for 8: GET https://cris.nih.go.kr/cris/en/search/search_result_st01_en.jsp?seq=8 failed after 3 attempts: 404 Client Error: Not Found for url: https://cris.nih.go.kr/cris/en/search/search_result_st01_en.jsp?seq=8
+[CRIS] 0 row(s) in 13.6s
+  [ReBEC] search failed: GET https://ensaiosclinicos.gov.br/rg failed after 3 attempts: 404 Client Error: Not Found for url: https://ensaiosclinicos.gov.br/rg?q=Cagrilintide%2BSemaglutide&page=1
+  ReBEC search returned 0 trial id(s).
+[ReBEC] 0 row(s) in 11.3s
+  [ChiCTR] https://www.chictr.org.cn/searchprojEN.html -> GET https://www.chictr.org.cn/searchprojEN.html failed after 3 attempts: HTTPSConnectionPool(host='www.chictr.org.cn', port=443): Read timed out. (read timeout=60)
+  [ChiCTR] https://www.chictr.org.cn/searchproj.html -> GET https://www.chictr.org.cn/searchproj.html failed after 3 attempts: 405 Client Error: Not Allowed for url: https://www.chictr.org.cn/searchproj.html?title=Cagrilintide%2BSemaglutide&intervention=Cagrilintide%2BSemaglutide&page=1
+  [ChiCTR] https://www.chictr.org.cn/searchlist.aspx -> POST https://www.chictr.org.cn/searchlist.aspx failed after 3 attempts: 404 Client Error:  for url: https://www.chictr.org.cn/searchlist.aspx
+  [ChiCTR] no results (the site may be blocking automated requests – the orchestrator can back-fill via WHO ICTRP).
+[ChiCTR] 0 row(s) in 112.8s
+
+[ICTRP fallback] attempting back-fill for: CTRI, ANZCTR, JRCT, CRIS, ReBEC, ChiCTR
+  [ICTRP] response was not parseable XML (not well-formed (invalid token): line 20, column 14); the portal likely returned an HTML page instead.
+
+Writing per-registry Excel files ...
+  wrote 33 rows -> cagrilintide_semaglutide_trials\cagrilintide_semaglutide_clinicaltrialsgov.xlsx
+  wrote 15 rows -> cagrilintide_semaglutide_trials\cagrilintide_semaglutide_eu_clinical_trials.xlsx
+
+Writing combined master Excel ...
+  wrote 48 rows -> cagrilintide_semaglutide_trials\cagrilintide_semaglutide_ALL_REGISTRIES.xlsx
+
+======================================================================
+SUMMARY
+======================================================================
+  ClinicalTrials.gov         33 trial(s)
+  EU Clinical Trials         15 trial(s)
+  CTRI                        0 trial(s)
+  ChiCTR                      0 trial(s)
+  JRCT                        0 trial(s)
+  ANZCTR                      0 trial(s)
+  CRIS                        0 trial(s)
+  ReBEC                       0 trial(s)
+  TOTAL                      48 trial(s)
